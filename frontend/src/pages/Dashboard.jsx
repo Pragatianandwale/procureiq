@@ -183,7 +183,7 @@ function ScenarioSimulator() {
     setSimError(null);
     setSimResult(null);
     try {
-      const res = await fetch('http://localhost:8000/api/simulate', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/simulate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type }),
@@ -440,7 +440,7 @@ function Dashboard() {
 
   const fetchLiveData = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/data-sources/live');
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/data-sources/live`);
       if (response.ok) {
         const data = await response.json();
         setLiveData(data);
