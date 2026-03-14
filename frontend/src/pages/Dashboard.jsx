@@ -171,31 +171,91 @@ const SCENARIOS = [
   },
 ];
 
+// ── CLIENT-SIDE scenario engine — no backend needed ──
+function computeScenario(type) {
+  const BASE = [
+    { supplier_name: 'Thai Rubber Co',         country: 'Thailand',   grade: 'RSS2', quality_score: 0.85, cost_score: 0.72, lead_time_score: 0.80, carbon_score: 0.65 },
+    { supplier_name: 'Vietnamese Rubber Group', country: 'Vietnam',    grade: 'RSS3', quality_score: 0.78, cost_score: 0.81, lead_time_score: 0.72, carbon_score: 0.70 },
+    { supplier_name: 'Harrisons Malayalam',     country: 'India',      grade: 'RSS1', quality_score: 0.92, cost_score: 0.68, lead_time_score: 0.95, carbon_score: 0.88 },
+    { supplier_name: 'PT Rubber Indonesia',     country: 'Indonesia',  grade: 'RSS2', quality_score: 0.80, cost_score: 0.75, lead_time_score: 0.65, carbon_score: 0.60 },
+  ];
+  const W = { quality: 0.40, cost: 0.30, lead_time: 0.20, carbon: 0.10 };
+  const suppliers = BASE.map(s => ({ ...s }));
+
+  let scenario_label = '', scenario_description = '', signal_change = '';
+
+  if (type === 'kerala_flood') {
+    suppliers.find(s => s.supplier_name === 'Harrisons Malayalam').lead_time_score = 0.40;
+    suppliers.find(s => s.supplier_name === 'Harrisons Malayalam').quality_score = 0.88;
+    scenario_label = 'Kerala Flooding';
+    scenario_description = 'OpenWeatherMap: Kerala humidity 94%, heavy rain. Harrisons harvest delayed 2 weeks.';
+    signal_change = 'Harrisons lead_time: 0.95 → 0.40 (harvest delayed)';
+  } else if (type === 'harrisons_not_ready') {
+    suppliers.find(s => s.supplier_name === 'Harrisons Malayalam').lead_time_score = 0.20;
+    scenario_label = 'Harrisons Harvest Not Ready';
+    scenario_description = 'harrisons_harvest.csv: delivery_ready = false for all upcoming dates.';
+    signal_change = 'Harrisons lead_time: 0.95 → 0.20 (not available)';
+  } else if (type === 'bangkok_price_crash') {
+    suppliers.find(s => s.supplier_name === 'Thai Rubber Co').cost_score = 0.95;
+    suppliers.find(s => s.supplier_name === 'Vietnamese Rubber Group').cost_score = 0.92;
+    scenario_label = 'Bangkok Price Crash';
+    scenario_description = 'Bangkok Exchange: prices down 18%. External suppliers now significantly cheaper than Harrisons.';
+    signal_change = 'Thai cost: 0.72 → 0.95, Vietnamese cost: 0.81 → 0.92';
+  } else if (type === 'low_confidence') {
+    return {
+      scenario_type: type, scenario_label: 'Contradictory Signals — WAIT',
+      scenario_description: 'Vietnamese harvest delayed + Indonesian exports down + Bangkok prices spiking. Signals contradictory.',
+      signal_change: 'Confidence: 85% → 43% (below 55% threshold)',
+      recommendation: 'WAIT', top_supplier: null, confidence: 0.43,
+      ranked_suppliers: [],
+      wait_reason: 'System refuses to recommend on weak signals. Silence is smarter than a wrong Rs.10 Cr order.',
+    };
+  } else {
+    scenario_label = 'Today — Normal Conditions';
+    scenario_description = 'Kerala optimal, Harrisons 450MT RSS1 ready, Bangkok prices rising.';
+    signal_change = 'No adjustments — baseline scores';
+  }
+
+  suppliers.forEach(s => {
+    s.ibn_score = Math.round((s.quality_score * W.quality + s.cost_score * W.cost + s.lead_time_score * W.lead_time + s.carbon_score * W.carbon) * 1000) / 1000;
+  });
+  suppliers.sort((a, b) => b.ibn_score - a.ibn_score);
+  suppliers.forEach((s, i) => { s.rank = i + 1; });
+
+  const top = suppliers[0];
+  const confidence = Math.min(0.92, 0.55 + top.ibn_score * 0.45);
+
+  return {
+    scenario_type: type, scenario_label, scenario_description, signal_change,
+    recommendation: 'BUY', top_supplier: top.supplier_name,
+    confidence: Math.round(confidence * 100) / 100,
+    ranked_suppliers: suppliers,
+    reason: `${top.supplier_name} ranks #1 with IBN score ${Math.round(top.ibn_score * 100)}. ${scenario_description}`,
+  };
+}
+
 function ScenarioSimulator() {
   const [simResult, setSimResult] = useState(null);
   const [simLoading, setSimLoading] = useState(false);
   const [activeScenario, setActiveScenario] = useState(null);
   const [simError, setSimError] = useState(null);
 
-  const runScenario = async (type) => {
+  const runScenario = (type) => {
     setSimLoading(true);
     setActiveScenario(type);
     setSimError(null);
     setSimResult(null);
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/simulate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type }),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      setSimResult(data);
-    } catch (e) {
-      console.error('Simulation error', e);
-      setSimError('Could not reach backend. Make sure the server is running on port 8000.');
-    }
-    setSimLoading(false);
+    // Small delay so the spinner is visible — then compute client-side
+    setTimeout(() => {
+      try {
+        const data = computeScenario(type);
+        setSimResult(data);
+      } catch (e) {
+        console.error('Simulation error', e);
+        setSimError('Simulation failed. Please refresh the page and try again.');
+      }
+      setSimLoading(false);
+    }, 600);
   };
 
   const isWaitResult = simResult?.recommendation === 'WAIT';
