@@ -1,0 +1,49 @@
+===== COPY THIS ENTIRE PROMPT TO REPLIT AI =====
+
+Deploy ProcureIQ - AI Procurement System
+
+SYSTEM OVERVIEW:
+Full-stack application with Python FastAPI backend and React frontend.
+Uses live APIs (OpenWeather, ExchangeRate, World Bank, RSS feeds).
+Implements Intent-Based Networking (IBN) for supplier ranking.
+
+BACKEND SETUP:
+- Framework: FastAPI (Python)
+- Location: procureiq/backend/
+- Entry point: main.py
+- Port: 8000
+- Dependencies: See procureiq/requirements.txt
+
+FRONTEND SETUP:
+- Framework: React + Vite
+- Location: procureiq/frontend/
+- Entry point: src/main.jsx
+- Port: 3003 (fallback: 3000-3005)
+- Dependencies: See procureiq/frontend/package.json
+
+ENVIRONMENT VARIABLES:
+Create .env file in procureiq/ folder with:
+OPENWEATHER_API_KEY=your_openweather_key_here
+EXCHANGERATE_API_KEY=your_exchangerate_key_here
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
+
+DEPLOYMENT STEPS:
+1. Install Python dependencies: pip install -r procureiq/requirements.txt
+2. Install Node dependencies: cd procureiq/frontend && npm install
+3. Start backend: cd procureiq/backend && python main.py
+4. Start frontend: cd procureiq/frontend && npm run dev
+5. Access at frontend URL (Replit will provide)
+
+CRITICAL NOTES:
+- Backend MUST start before frontend
+- CORS configured for ports 3000-3005
+- Skip spaCy download (Python 3.14 incompatible)
+- deep-translator used instead of googletrans
+- Both services must run concurrently
+
+EXPECTED RESULT:
+- Backend API: http://localhost:8000
+- Frontend UI: http://localhost:3003
+- Dashboard shows BUY recommendation with 85% confidence
+- Live data from 6 sources visible
+- All features interactive and working

@@ -1,0 +1,79 @@
+========================================
+COPY THIS ENTIRE TEXT TO REPLIT AI
+========================================
+
+I need you to help me deploy ProcureIQ, an AI-powered procurement system.
+
+PROJECT STRUCTURE:
+This is a full-stack application with:
+- Backend: Python FastAPI (port 8000)
+- Frontend: React + Vite (port 3003)
+- Database: SQLite (local)
+- APIs: OpenWeather, ExchangeRate, World Bank, RSS feeds
+
+STEP 1 - CREATE ENVIRONMENT FILE:
+Create a file called .env in the procureiq/ directory with this content:
+
+OPENWEATHER_API_KEY=your_openweather_key_here
+EXCHANGERATE_API_KEY=your_exchangerate_key_here
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
+
+STEP 2 - INSTALL PYTHON DEPENDENCIES:
+Run this command:
+pip install -r procureiq/requirements.txt
+
+STEP 3 - INSTALL NODE DEPENDENCIES:
+Run these commands:
+cd procureiq/frontend
+npm install
+cd ../..
+
+STEP 4 - START BACKEND:
+In one terminal, run:
+cd procureiq/backend
+python main.py
+
+Wait until you see: "Uvicorn running on http://0.0.0.0:8000"
+
+STEP 5 - START FRONTEND:
+In a second terminal, run:
+cd procureiq/frontend
+npm run dev
+
+Wait until you see: "Local: http://localhost:3003/"
+
+STEP 6 - VERIFY:
+Open the application in the webview. You should see:
+- "ALL SYSTEMS LIVE" badge (green)
+- Weather data from 4 cities
+- Exchange rates for 5 currencies
+- A "RUN PIPELINE NOW" button
+
+Click "RUN PIPELINE NOW" and wait 5-10 seconds.
+
+EXPECTED RESULT:
+You should see:
+- Recommendation: BUY
+- Supplier: Harrisons Malayalam
+- Confidence: 85%
+- Grade: RSS1
+- Quantity: 300 MT
+
+IMPORTANT NOTES:
+- Backend MUST start before frontend
+- If you get "port in use" error, kill the process: pkill -f "python main.py"
+- If modules are missing, reinstall: pip install -r requirements.txt --force-reinstall
+- spaCy may fail on Python 3.14 - this is OK, system has fallback
+- CORS is configured for ports 3000-3005
+
+TROUBLESHOOTING:
+- If backend won't start: Check Python version (need 3.11+)
+- If frontend is blank: Check backend is running first
+- If no live data: Check .env file was created correctly
+- If CORS error: Verify frontend port is 3000-3005
+
+Can you help me execute these steps?
+
+========================================
+END OF PROMPT
+========================================

@@ -1,0 +1,5 @@
+supplier_name,country,grade,quality_score,cost_score,lead_time_score,carbon_score
+Thai Rubber Co,Thailand,RSS2,0.85,0.72,0.80,0.65
+Vietnamese Rubber Group,Vietnam,RSS3,0.78,0.81,0.72,0.70
+Harrisons Malayalam,India,RSS1,0.92,0.68,0.95,0.88
+PT Rubber Indonesia,Indonesia,RSS2,0.80,0.75,0.65,0.60

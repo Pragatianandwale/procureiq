@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+pydantic
+python-dotenv
+requests
+pandas
+numpy
+feedparser
+deep-translator
+spacy
+sentence-transformers
+faiss-cpu
+scikit-learn
+pytz
+google-generativeai

@@ -1,0 +1,13 @@
+run = "bash start.sh"
+language = "python3"
+entrypoint = "procureiq/backend/main.py"
+
+[nix]
+channel = "stable-23_11"
+
+[deployment]
+run = ["bash", "start.sh"]
+deploymentTarget = "cloudrun"
+
+[env]
+PYTHONPATH = "${PYTHONPATH}:${REPL_HOME}/procureiq/backend"

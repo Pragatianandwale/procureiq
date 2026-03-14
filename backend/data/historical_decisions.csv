@@ -1,0 +1,7 @@
+date,supplier,grade,recommendation,manager_decision,outcome,score
+2025-01-15,Thai Rubber Co,RSS2,BUY,BUY,positive,0.87
+2025-01-16,Vietnamese Rubber Group,RSS3,WAIT,WAIT,positive,0.55
+2025-01-17,Harrisons Malayalam,RSS1,BUY,BUY,positive,0.92
+2025-01-18,PT Rubber Indonesia,RSS2,SWITCH,SWITCH,positive,0.71
+2025-01-19,Thai Rubber Co,RSS2,WAIT,BUY,negative,0.45
+2025-01-20,Harrisons Malayalam,RSS1,BUY,BUY,positive,0.89

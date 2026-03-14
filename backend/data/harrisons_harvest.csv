@@ -1,0 +1,5 @@
+date,region,grade,yield_tonnes,quality_index,delivery_ready
+2025-03-01,Kerala North,RSS1,450,0.94,true
+2025-03-08,Kerala South,RSS2,380,0.87,true
+2025-03-15,Kerala North,RSS1,420,0.91,false
+2025-03-22,Kerala South,RSS1,500,0.95,true
